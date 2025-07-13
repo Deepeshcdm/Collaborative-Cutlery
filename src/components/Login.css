@@ -1,0 +1,26 @@
+button{
+    background-color: #bb2323;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: progress;
+    border-radius: 50px;
+    font-size: 16px;
+}
+ button:hover{
+        background-color: #1b71a6;
+        transition: background-color 0.3s ease;
+        transform: scale(1.1);
+        box-shadow: 4px 7px 6px rgba(255, 229, 229, 0.1);
+        
+ }
+
+ input{
+    width: 100%;
+    border-radius: 7px;
+   font-style: italic;
+    
+ }
+ .Login:hover{
+    border: 3px solid #1b1b1b;
+ }
