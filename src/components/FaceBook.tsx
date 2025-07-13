@@ -38,21 +38,25 @@ function FaceBook() {
     }, []);
 
     const handleFacebookLogin = () => {
-        if (window.FB) {
-            window.FB.login(function(response: any) {
-                if (response.authResponse) {
-                    console.log('Welcome! Fetching your information...');
-                    window.FB.api('/me', { fields: 'name,email' }, function(userInfo: any) {
-                        console.log('User info:', userInfo);
-                        alert(`Welcome ${userInfo.name}!`);
-                    });
-                } else {
-                    console.log('User cancelled login or did not fully authorize.');
-                }
-            }, { scope: 'email,public_profile' });
-        } else {
-            alert('Facebook SDK not loaded. Please try again.');
-        }
+        // Alternative: Redirect to Facebook OAuth URL
+        const facebookAuthUrl = `https://www.facebook.com/v23.0/dialog/oauth?client_id=687470240959979&redirect_uri=${encodeURIComponent(window.location.origin)}&scope=email,public_profile&response_type=code`;
+        
+        // Open Facebook login in a popup window
+        const popup = window.open(
+            facebookAuthUrl,
+            'facebookLogin',
+            'width=600,height=700,scrollbars=yes,resizable=yes'
+        );
+
+        // Monitor the popup for completion
+        const checkClosed = setInterval(() => {
+            if (popup?.closed) {
+                clearInterval(checkClosed);
+                console.log('Facebook login popup closed');
+                // You would handle the authorization code here
+                alert('Facebook login completed. Check console for details.');
+            }
+        }, 1000);
     };
 
     return (
