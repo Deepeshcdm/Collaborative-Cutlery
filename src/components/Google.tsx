@@ -1,55 +1,27 @@
 import { useEffect } from 'react';
 import '../components/shared-button.css';
-
-// Declare global Google types
-declare global {
-    interface Window {
-        google: any;
-        handleGoogleResponse: (response: any) => void;
-    }
-    var google: any;
-}
+import { signInWithPopup } from 'firebase/auth';
+import { auth, googleProvider } from '../firebase.js';
 
 function Google() {
     useEffect(() => {
-        // Initialize Google Sign-In
-        const initializeGoogleSignIn = () => {
-            if (window.google) {
-                window.google.accounts.id.initialize({
-                    client_id: "YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com", // Replace with your Google Client ID
-                    callback: handleGoogleResponse,
-                    auto_select: false,
-                    cancel_on_tap_outside: true
-                });
-            } else {
-                // Retry after a short delay if Google SDK is not loaded
-                setTimeout(initializeGoogleSignIn, 100);
-            }
-        };
-
-        // Start initialization after a small delay
-        setTimeout(initializeGoogleSignIn, 500);
+        console.log('Google component mounted');
     }, []);
 
-    const handleGoogleResponse = (response: any) => {
-        console.log("Google Sign-In Response:", response);
-        
-        // Decode the JWT token to get user information
-        if (response.credential) {
-            const token = response.credential;
-            const payload = JSON.parse(atob(token.split('.')[1]));
+    const handleGoogleLogin = async () => {
+        try {
+            const result = await signInWithPopup(auth, googleProvider);
+            const user = result.user;
             
-            console.log("User Info:", payload);
-            alert(`Welcome ${payload.name}!\nEmail: ${payload.email}`);
-        }
-    };
-
-    const handleGoogleLogin = () => {
-        if (window.google) {
-            // Trigger Google Sign-In popup
-            window.google.accounts.id.prompt();
-        } else {
-            alert('Google Sign-In is not loaded yet. Please try again.');
+            console.log('Google Sign-In Success:', user);
+            alert(`Welcome ${user.displayName}!\nEmail: ${user.email}`);
+            
+            // You can now access user information:
+            // user.displayName, user.email, user.photoURL, user.uid
+            
+        } catch (error) {
+            console.error('Google Sign-In Error:', error);
+            alert('Google Sign-In failed. Please try again.');
         }
     };
 

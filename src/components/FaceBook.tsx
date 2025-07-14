@@ -1,62 +1,28 @@
 import { useEffect } from 'react';
 import '../components/shared-button.css';
-
-// Declare global Facebook types
-declare global {
-    interface Window {
-        fbAsyncInit: () => void;
-        FB: any;
-        checkLoginState: () => void;
-    }
-    var FB: any;
-}
+import { signInWithPopup } from 'firebase/auth';
+import { auth, facebookProvider } from '../firebase.js';
 
 function FaceBook() {
     useEffect(() => {
-        // Initialize Facebook SDK
-        window.fbAsyncInit = function() {
-            window.FB.init({
-                appId: '1253448282936104',
-                cookie: true,
-                xfbml: true,
-                version: 'v23.0'
-            });
-        };
-
-        // Load the SDK asynchronously
-        const loadFacebookSDK = () => {
-            if (document.getElementById('facebook-jssdk')) {
-                return;
-            }
-            const js = document.createElement('script');
-            js.id = 'facebook-jssdk';
-            js.src = 'https://connect.facebook.net/en_US/sdk.js';
-            document.getElementsByTagName('head')[0].appendChild(js);
-        };
-
-        loadFacebookSDK();
+        console.log('Facebook component mounted');
     }, []);
 
-    const handleFacebookLogin = () => {
-        // Alternative: Redirect to Facebook OAuth URL
-        const facebookAuthUrl = `https://www.facebook.com/v23.0/dialog/oauth?client_id=687470240959979&redirect_uri=${encodeURIComponent(window.location.origin)}&scope=email,public_profile&response_type=code`;
-        
-        // Open Facebook login in a popup window
-        const popup = window.open(
-            facebookAuthUrl,
-            'facebookLogin',
-            'width=600,height=700,scrollbars=yes,resizable=yes'
-        );
-
-        // Monitor the popup for completion
-        const checkClosed = setInterval(() => {
-            if (popup?.closed) {
-                clearInterval(checkClosed);
-                console.log('Facebook login popup closed');
-                // You would handle the authorization code here
-                alert('Facebook login completed. Check console for details.');
-            }
-        }, 1000);
+    const handleFacebookLogin = async () => {
+        try {
+            const result = await signInWithPopup(auth, facebookProvider);
+            const user = result.user;
+            
+            console.log('Facebook Sign-In Success:', user);
+            alert(`Welcome ${user.displayName}!\nEmail: ${user.email}`);
+            
+            // You can now access user information:
+            // user.displayName, user.email, user.photoURL, user.uid
+            
+        } catch (error) {
+            console.error('Facebook Sign-In Error:', error);
+            alert('Facebook Sign-In failed. Please try again.');
+        }
     };
 
     return (

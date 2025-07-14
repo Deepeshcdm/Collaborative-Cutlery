@@ -11,7 +11,7 @@ button{
         background-color: #1b71a6;
         transition: background-color 0.3s ease;
         transform: scale(1.1);
-        box-shadow: 4px 7px 6px rgba(255, 229, 229, 0.1);
+        box-shadow: 4px 7px 6px rgba(255, 229, 229, 1);
         
  }
 
