@@ -16,7 +16,7 @@ function FaceBook() {
         // Initialize Facebook SDK
         window.fbAsyncInit = function() {
             window.FB.init({
-                appId: '687470240959979',
+                appId: '1253448282936104',
                 cookie: true,
                 xfbml: true,
                 version: 'v23.0'
